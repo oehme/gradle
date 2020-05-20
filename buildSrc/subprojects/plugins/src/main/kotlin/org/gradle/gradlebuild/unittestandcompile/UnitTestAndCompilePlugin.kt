@@ -18,6 +18,7 @@ package org.gradle.gradlebuild.unittestandcompile
 import accessors.base
 import accessors.java
 import buildJvms
+import com.gradle.enterprise.gradleplugin.testdistribution.TestDistributionPlugin
 import libraries
 import library
 import maxParallelForks
@@ -74,6 +75,7 @@ class UnitTestAndCompilePlugin : Plugin<Project> {
         apply(plugin = "groovy")
         plugins.apply(AvailableJavaInstallationsPlugin::class.java)
         plugins.apply(TestRetryPlugin::class.java)
+        plugins.apply(TestDistributionPlugin::class.java)
 
         val extension = extensions.create<UnitTestAndCompileExtension>("gradlebuildJava", this)
 
@@ -190,8 +192,10 @@ class UnitTestAndCompilePlugin : Plugin<Project> {
             val implementation = configurations.getByName("implementation")
             val compileOnly = configurations.getByName("compileOnly")
             val testImplementation = configurations.getByName("testImplementation")
+            val testCompileOnly = configurations.getByName("testCompileOnly")
             val testRuntimeOnly = configurations.getByName("testRuntimeOnly")
-            testImplementation(library("junit"))
+            testCompileOnly(library("junit"))
+            testRuntimeOnly(library("junit5_vintage"))
             testImplementation(library("groovy"))
             testImplementation(testLibrary("spock"))
             testRuntimeOnly(testLibrary("bytebuddy"))
@@ -270,14 +274,19 @@ class UnitTestAndCompilePlugin : Plugin<Project> {
         tasks.withType<Test>().configureEach {
             maxParallelForks = project.maxParallelForks
 
+            useJUnitPlatform()
             configureJvmForTest()
             configureGitInfo()
             addOsAsInputs()
 
-            if (BuildEnvironment.isCiServer && this !is PerformanceTest) {
+            if (this !is PerformanceTest) {
                 retry {
                     maxRetries.set(1)
                     maxFailures.set(10)
+                }
+                distribution {
+                    maxLocalExecutors.set(0)
+                    enabled.set(true)
                 }
                 doFirst {
                     logger.lifecycle("maxParallelForks for '$path' is $maxParallelForks")

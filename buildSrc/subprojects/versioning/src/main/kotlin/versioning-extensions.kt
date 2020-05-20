@@ -15,6 +15,7 @@
  */
 
 import org.gradle.api.Project
+import org.gradle.api.plugins.ExtraPropertiesExtension
 import org.gradle.build.ReleasedVersionsFromVersionControl
 import org.gradle.kotlin.dsl.*
 import java.io.File
@@ -23,6 +24,10 @@ import org.gradle.api.provider.Provider
 
 val Project.gitInfo
     get() = rootProject.extensions.getByName<GitInformationExtension>("gitInfo")
+
+
+val Project.ext
+    get() = rootProject.extensions.getByName<ExtraPropertiesExtension>("ext")
 
 
 val Project.releasedVersions

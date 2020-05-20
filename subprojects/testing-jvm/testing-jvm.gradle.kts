@@ -77,8 +77,12 @@ classycle {
 }
 
 tasks.named<Test>("test").configure {
+    exclude("org/gradle/api/internal/tasks/testing/junit/AJunit*.*")
+    exclude("org/gradle/api/internal/tasks/testing/junit/BJunit*.*")
     exclude("org/gradle/api/internal/tasks/testing/junit/ATestClass*.*")
+    exclude("org/gradle/api/internal/tasks/testing/junit/ATestSetUp*.*")
     exclude("org/gradle/api/internal/tasks/testing/junit/ABroken*TestClass*.*")
+    exclude("org/gradle/api/internal/tasks/testing/testng/ATestNGFactoryClass.*")
 }
 
 integrationTestUsesSampleDir("subprojects/testing-jvm/src/main")

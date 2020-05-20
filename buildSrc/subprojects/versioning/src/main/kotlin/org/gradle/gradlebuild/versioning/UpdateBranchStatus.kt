@@ -16,10 +16,10 @@
 
 package org.gradle.gradlebuild.versioning
 
+import gitInfo
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import org.gradle.kotlin.dsl.*
-import gitInfo
 
 
 /**
