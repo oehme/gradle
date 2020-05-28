@@ -19,6 +19,7 @@ package org.gradle.java.compile.jpms.test
 import org.gradle.integtests.fixtures.AvailableJavaHomes
 import org.gradle.util.Requires
 import org.gradle.util.TextUtil
+import spock.lang.Ignore
 
 class JavaModuleBackboxTestExcutionIntegrationTest extends AbstractJavaModuleTestingIntegrationTest {
 
@@ -89,6 +90,7 @@ class JavaModuleBackboxTestExcutionIntegrationTest extends AbstractJavaModuleTes
     }
 
 
+    @Ignore
     def "runs TestNG blackbox test as module using the module path"() {
         given:
         buildFile << """

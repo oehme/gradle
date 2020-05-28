@@ -35,9 +35,9 @@ class JavaCompileMultiTestRunner extends AbstractMultiTestRunner {
 
     @Override
     protected void createExecutions() {
-        add(new JavaCompilerExecution(Compiler.IN_PROCESS_JDK_COMPILER))
+//        add(new JavaCompilerExecution(Compiler.IN_PROCESS_JDK_COMPILER))
         add(new JavaCompilerExecution(Compiler.WORKER_JDK_COMPILER))
-        add(new JavaCompilerExecution(Compiler.WORKER_COMMAND_LINE_COMPILER))
+//        add(new JavaCompilerExecution(Compiler.WORKER_COMMAND_LINE_COMPILER))
     }
 
     private static class JavaCompilerExecution extends AbstractMultiTestRunner.Execution {

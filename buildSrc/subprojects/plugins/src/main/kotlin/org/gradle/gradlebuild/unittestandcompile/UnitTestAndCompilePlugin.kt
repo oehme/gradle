@@ -19,6 +19,7 @@ import accessors.base
 import accessors.java
 import buildJvms
 import com.gradle.enterprise.gradleplugin.testdistribution.TestDistributionPlugin
+import gitInfo
 import libraries
 import library
 import maxParallelForks
@@ -54,12 +55,11 @@ import org.gradle.kotlin.dsl.*
 import org.gradle.plugins.ide.idea.IdeaPlugin
 import org.gradle.plugins.ide.idea.model.IdeaModel
 import org.gradle.process.CommandLineArgumentProvider
+import org.gradle.testing.PerformanceTest
 import org.gradle.testretry.TestRetryPlugin
 import testLibrary
 import java.util.concurrent.Callable
 import java.util.jar.Attributes
-import org.gradle.testing.PerformanceTest
-import gitInfo
 
 
 /**
@@ -285,8 +285,13 @@ class UnitTestAndCompilePlugin : Plugin<Project> {
                     maxFailures.set(10)
                 }
                 distribution {
-                    maxLocalExecutors.set(0)
-                    enabled.set(true)
+                    maxLocalExecutors.set(System.getProperty("max.local.executors")?.toInt() ?: 0)
+                    enabled.set(System.getProperty("enable.distribution.plugin")?.toBoolean() ?: true)
+                    when {
+                        OperatingSystem.current().isLinux() -> requirements.set(listOf("os=linux"))
+                        OperatingSystem.current().isWindows() -> requirements.set(listOf("os=windows"))
+                        OperatingSystem.current().isMacOsX() -> requirements.set(listOf("os=macos"))
+                    }
                 }
                 doFirst {
                     logger.lifecycle("maxParallelForks for '$path' is $maxParallelForks")
