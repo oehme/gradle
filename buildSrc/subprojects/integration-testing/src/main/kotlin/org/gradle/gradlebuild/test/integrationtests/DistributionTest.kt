@@ -112,6 +112,7 @@ class LibsRepositoryEnvironmentProvider(objects: ObjectFactory) : CommandLineArg
         else dir.get().asFileTree.matching {
             include("**/*.pom")
             include("**/*.xml")
+
         }.files.toSortedSet()
 
     override fun asArguments() =
