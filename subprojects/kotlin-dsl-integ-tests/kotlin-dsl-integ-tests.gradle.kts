@@ -85,7 +85,7 @@ tasks {
 }
 
 tasks.withType<IntegrationTest>().configureEach {
-    dependsOn("publishPluginsToTestRepository")
+    dependsOn(":kotlinDslPlugins:publishPluginsToTestRepository")
 }
 
 testFilesCleanup {
