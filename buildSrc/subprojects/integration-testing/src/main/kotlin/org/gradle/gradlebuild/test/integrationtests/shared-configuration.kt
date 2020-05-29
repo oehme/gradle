@@ -118,7 +118,6 @@ fun Project.integrationTestUsesKotlinDslPlugins() {
                 .files
                 .toSortedSet()
         }).withPropertyName("localKotlinDslPluginJars")
-            .optional()
             .withPathSensitivity(PathSensitivity.RELATIVE)
             .withNormalizer(ClasspathNormalizer::class)
 
@@ -132,7 +131,6 @@ fun Project.integrationTestUsesKotlinDslPlugins() {
                 .files
                 .toSortedSet()
         }).withPropertyName("localKotlinDslPluginPoms")
-            .optional()
             .withPathSensitivity(PathSensitivity.RELATIVE)
     }
 }
