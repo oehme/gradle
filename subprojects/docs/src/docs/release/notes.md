@@ -58,6 +58,22 @@ This improves the likelihood of [build cache hits](userguide/build_cache.html) w
 See the [userguide](userguide/more_about_tasks.html#sec:meta_inf_normalization) for further information.  Note that this API is incubating and will likely change in future releases as support 
 is expanded for normalizing properties files outside of `META-INF`.
 
+## Gradle module metadata can be made reproducible
+
+The Gradle Module Metadata file contains a build identifier field which defaults to a unique ID generated during build execution.
+This results in the generated file being different at each build execution.
+
+This value can now be disabled at the publication level, allowing users to opt-in for a reproducible Gradle Module Metadata file.
+
+```groovy
+main(MavenPublication) {
+    from components.java
+    withoutBuildIdentifier()
+}
+```
+
+See the documentation for more information on [Gradle Module Metadata generation](userguide/publishing_gradle_module_metadata.html#sub:gmm-reproducible).
+
 ## Promoted features
 Promoted features are features that were incubating in previous versions of Gradle but are now supported and subject to backwards compatibility.
 See the User Manual section on the “[Feature Lifecycle](userguide/feature_lifecycle.html)” for more information.
