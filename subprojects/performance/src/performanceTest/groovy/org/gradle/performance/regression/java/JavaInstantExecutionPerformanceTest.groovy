@@ -17,13 +17,16 @@
 package org.gradle.performance.regression.java
 
 import org.gradle.initialization.StartParameterBuildOptions.ConfigurationCacheOption
+import org.gradle.integtests.fixtures.executer.GradleDistribution
 import org.gradle.performance.AbstractCrossVersionGradleInternalPerformanceTest
 import org.gradle.performance.categories.PerformanceRegressionTest
 import org.gradle.performance.fixture.BuildExperimentInvocationInfo
 import org.gradle.performance.fixture.BuildExperimentListener
 import org.gradle.performance.fixture.BuildExperimentListenerAdapter
+import org.gradle.performance.fixture.GradleInvocationSpec
 import org.gradle.performance.measure.MeasuredOperation
 import org.gradle.test.fixtures.file.TestFile
+import org.gradle.util.GradleVersion
 import org.junit.experimental.categories.Category
 import spock.lang.Unroll
 
@@ -50,9 +53,7 @@ class JavaInstantExecutionPerformanceTest extends AbstractCrossVersionGradleInte
         runner.minimumBaseVersion = "5.6"
         runner.testProject = testProject.projectName
         runner.tasksToRun = ["assemble"]
-        runner.args = [
-            "-D${ConfigurationCacheOption.PROPERTY_NAME}=true"
-        ]
+        // runner.args = ["-D${ConfigurationCacheOption.PROPERTY_NAME}=true"] // TODO uncomment on rebaseline
 
         and:
         runner.useDaemon = daemon == hot
@@ -94,6 +95,17 @@ class JavaInstantExecutionPerformanceTest extends AbstractCrossVersionGradleInte
             void beforeInvocation(BuildExperimentInvocationInfo invocationInfo) {
                 if (action == storing) {
                     stateDir.deleteDir()
+                }
+                // TODO remove on rebaseline
+                def invocation = invocationInfo.buildExperimentSpec.invocation as GradleInvocationSpec
+                def dist = invocation.gradleDistribution as GradleDistribution
+                def customizer = invocationInfo.buildExperimentSpec.invocationCustomizer
+                if (dist.version < GradleVersion.version("6.5-rc-1")) {
+                    customizer.customize(invocationInfo, invocation.withAdditionalArgs(['-Dorg.gradle.unsafe.instant-execution=true']))
+                } else if (dist.version < GradleVersion.version("6.6-20200527184619+0000")) {
+                    customizer.customize(invocationInfo, invocation.withAdditionalArgs(["--${ConfigurationCacheOption.LONG_OPTION}=on"]))
+                } else {
+                    customizer.customize(invocationInfo, invocation.withAdditionalArgs(["--${ConfigurationCacheOption.LONG_OPTION}"]))
                 }
             }
 
