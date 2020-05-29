@@ -74,12 +74,12 @@ class StageProject(model: CIBuildModel, stage: Stage, rootProjectUuid: String) :
 }
 
 private fun FunctionalTest.dependsOn(dependency: IdOwner) {
-    dependencies {
-        dependency(dependency) {
-            snapshot {
-                onDependencyFailure = FailureAction.CANCEL
-                onDependencyCancel = FailureAction.CANCEL
-            }
-        }
-    }
+//    dependencies {
+//        dependency(dependency) {
+//            snapshot {
+//                onDependencyFailure = FailureAction.CANCEL
+//                onDependencyCancel = FailureAction.CANCEL
+//            }
+//        }
+//    }
 }
