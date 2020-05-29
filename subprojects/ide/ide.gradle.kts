@@ -63,10 +63,10 @@ dependencies {
     testImplementation(testFixtures(project(":core")))
     testImplementation(testFixtures(project(":dependencyManagement")))
 
-    testRuntimeOnly(project(":runtimeApiInfo"))
-
     integTestImplementation(testLibrary("jetty"))
-    integTestRuntimeOnly(project(":testKit"))
+
+    integTestDistributionRuntimeOnly(project(":distributionsCore"))
+    crossVersionTestDistributionRuntimeOnly(project(":distributionsCore"))
 }
 
 strictCompile {

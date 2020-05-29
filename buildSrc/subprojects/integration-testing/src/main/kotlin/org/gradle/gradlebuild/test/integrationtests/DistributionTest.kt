@@ -18,9 +18,10 @@ package org.gradle.gradlebuild.test.integrationtests
 
 import org.gradle.api.Named
 import org.gradle.api.Project
-import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.Directory
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.Internal
@@ -107,13 +108,10 @@ class LibsRepositoryEnvironmentProvider(objects: ObjectFactory) : CommandLineArg
 class GradleInstallationForTestEnvironmentProvider(project: Project) : CommandLineArgumentProvider, Named {
 
     @Internal
-    val gradleHomeDir = project.objects.directoryProperty()
+    val gradleHomeDir = project.files()
 
     @Internal
     val gradleUserHomeDir = project.objects.directoryProperty()
-
-    @Internal
-    val gradleGeneratedApiJarCacheDir = project.objects.directoryProperty()
 
     @Internal
     val toolingApiShadedJarDir = project.objects.directoryProperty()
@@ -131,15 +129,23 @@ class GradleInstallationForTestEnvironmentProvider(project: Project) : CommandLi
     @get:Nested
     val gradleDistribution = GradleDistribution(gradleHomeDir)
 
-    override fun asArguments() =
-        mapOf(
-            "integTest.gradleHomeDir" to absolutePathOf(gradleHomeDir),
+    override fun asArguments(): Iterable<String> {
+        val distributionDir = if (gradleHomeDir.files.size == 1) gradleHomeDir.singleFile else null
+        val distributionName = if (distributionDir != null) {
+            // complete distribution is used from 'build/bin distribution'
+            distributionDir.parentFile.parentFile.name
+        } else {
+            // gradle-runtime-api-info.jar in 'build/libs'
+            gradleHomeDir.filter { it.name.startsWith("gradle-runtime-api-info") }.singleFile.parentFile.parentFile.parentFile.name
+        }
+        return mapOf(
+            "integTest.gradleHomeDir" to (distributionDir ?: ""),
+            "integTest.gradleUserHomeDir" to absolutePathOf(gradleUserHomeDir.dir(distributionName)),
             "integTest.samplesdir" to absolutePathOf(gradleSnippetsDir),
-            "integTest.gradleUserHomeDir" to absolutePathOf(gradleUserHomeDir),
-            "integTest.gradleGeneratedApiJarCacheDir" to absolutePathOf(gradleGeneratedApiJarCacheDir),
             "org.gradle.integtest.daemon.registry" to absolutePathOf(daemonRegistry),
             "integTest.toolingApiShadedJarDir" to absolutePathOf(toolingApiShadedJarDir)
         ).asSystemPropertyJvmArguments()
+    }
 
     @Internal
     override fun getName() =
@@ -194,8 +200,8 @@ class BinaryDistributionsEnvironmentProvider(private val internalDistributions: 
 
 
 private
-fun absolutePathOf(property: DirectoryProperty) =
-    property.asFile.get().absolutePath
+fun absolutePathOf(provider: Provider<Directory>) =
+    provider.get().asFile.absolutePath
 
 
 internal

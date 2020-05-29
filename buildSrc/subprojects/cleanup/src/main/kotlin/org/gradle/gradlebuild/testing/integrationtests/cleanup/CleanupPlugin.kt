@@ -25,7 +25,7 @@ import org.gradle.util.GradleVersion
 class CleanupPlugin : Plugin<Project> {
 
     override fun apply(project: Project): Unit = project.run {
-        tasks.register<CleanUpCaches>("cleanUpCaches") {
+        tasks.register<CleanUpCaches>("cleanUpCaches") { // FIXME register for each distribution
             dependsOn(":createBuildReceipt")
             version.set(GradleVersion.version(project.version.toString()))
             homeDir.set(layout.projectDirectory.dir("intTestHomeDir"))

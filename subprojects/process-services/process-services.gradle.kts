@@ -19,7 +19,7 @@ dependencies {
 
     testImplementation(testFixtures(project(":core")))
 
-    integTestRuntimeOnly(project(":runtimeApiInfo"))
+    integTestDistributionRuntimeOnly(project(":distributionsCore"))
 }
 
 classycle {

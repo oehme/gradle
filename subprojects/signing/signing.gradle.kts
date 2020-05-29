@@ -41,8 +41,12 @@ dependencies {
     testImplementation(project(":ivy"))
     testImplementation(testFixtures(project(":core")))
 
-    testRuntimeOnly(project(":runtimeApiInfo"))
     testRuntimeOnly(testFixtures(project(":security")))
+    testRuntimeOnly(project(":distributionsPublishing")) {
+        because("ProjectBuilder tests load services from a Gradle distribution.")
+    }
+
+    integTestDistributionRuntimeOnly(project(":distributionsPublishing"))
 }
 
 strictCompile {

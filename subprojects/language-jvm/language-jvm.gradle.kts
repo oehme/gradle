@@ -25,11 +25,10 @@ dependencies {
     testImplementation(project(":snapshots"))
     testImplementation(testFixtures(project(":core")))
 
-    testRuntimeOnly(project(":languageJava"))
-    testRuntimeOnly(project(":runtimeApiInfo"))
-
     testFixturesImplementation(library("commons_lang"))
     testFixturesImplementation(library("guava"))
     testFixturesImplementation(project(":internalIntegTesting"))
     testFixturesImplementation(testFixtures(project(":core")))
+
+    integTestDistributionRuntimeOnly(project(":distributionsCore"))
 }

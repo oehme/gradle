@@ -29,9 +29,6 @@ dependencies {
     testImplementation(testFixtures(project(":core")))
     testImplementation(testFixtures(project(":logging")))
 
-    testRuntimeOnly(project(":runtimeApiInfo"))
-    testRuntimeOnly(project(":dependencyManagement"))
-
     integTestRuntimeOnly(project(":kotlinDsl"))
     integTestRuntimeOnly(project(":kotlinDslProviderPlugins"))
     integTestRuntimeOnly(project(":apiMetadata"))
@@ -43,4 +40,6 @@ dependencies {
     testFixturesImplementation(library("inject"))
     testFixturesImplementation(project(":baseServices"))
     testFixturesImplementation(project(":internalTesting"))
+
+    integTestDistributionRuntimeOnly(project(":distributionsCore"))
 }

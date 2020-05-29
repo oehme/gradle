@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.gradle.build
+package org.gradle.gradlebuild.packaging
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
@@ -30,6 +30,7 @@ import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
+import org.gradle.build.ReproduciblePropertiesWriter
 
 import java.util.Properties
 import javax.inject.Inject
@@ -49,9 +50,6 @@ abstract class ClasspathManifest @Inject constructor(
 
     @get:Internal
     abstract val generatedResourcesDir: DirectoryProperty
-
-    @get:Internal
-    abstract val additionalProjects: ListProperty<String>
 
     @get:Internal
     abstract val optionalProjects: ListProperty<String>
@@ -75,19 +73,13 @@ abstract class ClasspathManifest @Inject constructor(
         val inputProjectsArchivesBaseNames = runtimeProjectDependenciesPaths.get()
             .map { archiveBaseNamesByProjectPath.get().getValue(it) }
 
-        val additionalProjectsArchivesBaseNames = additionalProjects.get()
-            .map { archiveBaseNamesByProjectPath.get().getValue(it) }
-
-        (inputProjectsArchivesBaseNames + additionalProjectsArchivesBaseNames)
-            .joinForProperties()
+        inputProjectsArchivesBaseNames.joinForProperties()
     }
 
     @get:Input
     internal
     val optional: Provider<String> = providers.provider {
-        optionalProjects.get()
-            .map { archiveBaseNamesByProjectPath.get().getValue(it) }
-            .joinForProperties()
+        optionalProjects.get().joinForProperties()
     }
 
     @get:OutputFile

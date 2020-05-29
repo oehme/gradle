@@ -36,7 +36,7 @@ dependencies {
     integTestImplementation(project(":baseServicesGroovy"))
     integTestImplementation(library("jetbrains_annotations"))
 
-    integTestRuntimeOnly(project(":distributionsMinimal"))
+    integTestDistributionRuntimeOnly(project(":distributionsCore"))
 }
 
 testFilesCleanup {

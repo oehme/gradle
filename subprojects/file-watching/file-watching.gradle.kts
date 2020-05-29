@@ -36,11 +36,5 @@ dependencies {
     testImplementation(testFixtures(project(":fileCollections")))
     testImplementation(library("commons_io"))
 
-    integTestRuntimeOnly(project(":runtimeApiInfo"))
-    integTestRuntimeOnly(project(":workers"))
-    integTestRuntimeOnly(project(":dependencyManagement"))
-    integTestRuntimeOnly(project(":apiMetadata"))
-    integTestRuntimeOnly(project(":kotlinDsl"))
-    integTestRuntimeOnly(project(":kotlinDslProviderPlugins"))
-    integTestRuntimeOnly(project(":kotlinDslToolingBuilders"))
+    integTestDistributionRuntimeOnly(project(":distributionsCore"))
 }

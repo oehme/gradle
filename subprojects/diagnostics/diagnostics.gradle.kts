@@ -43,10 +43,6 @@ dependencies {
     testImplementation(testFixtures(project(":dependencyManagement")))
     testImplementation(testFixtures(project(":logging")))
 
-    testRuntimeOnly(project(":runtimeApiInfo"))
-    testRuntimeOnly(project(":kotlinDsl"))
-    testRuntimeOnly(project(":kotlinDslProviderPlugins"))
-
     integTestImplementation(testLibrary("jsoup"))
     integTestImplementation(testLibrary("jetty"))
 
@@ -56,13 +52,9 @@ dependencies {
     testFixturesImplementation(project(":internalIntegTesting"))
     testFixturesImplementation(library("guava"))
 
-    integTestRuntimeOnly(project(":buildInit"))
-    // These are only here for 'DiagnosticsComponentReportIntegrationTest.shows details of multiple components'
-    integTestRuntimeOnly(project(":plugins"))
-    integTestRuntimeOnly(project(":platformNative"))
-    integTestRuntimeOnly(project(":languageNative"))
-    integTestRuntimeOnly(project(":kotlinDslToolingBuilders"))
-
+    integTestDistributionRuntimeOnly(project(":distributionsFull"))  {
+        because("There are integration tests that assert that all the tasks of a full distribution are reported (these should probably move to ':integTests').")
+    }
 }
 
 classycle {

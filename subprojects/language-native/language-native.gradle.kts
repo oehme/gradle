@@ -68,15 +68,13 @@ dependencies {
     testImplementation(testFixtures(project(":messaging")))
     testImplementation(testFixtures(project(":snapshots")))
 
-    testRuntimeOnly(project(":runtimeApiInfo"))
-
     integTestImplementation(project(":native"))
     integTestImplementation(project(":resources"))
     integTestImplementation(library("nativePlatform"))
     integTestImplementation(library("ant"))
     integTestImplementation(library("jgit"))
 
-    integTestRuntimeOnly(project(":ideNative"))
+    integTestDistributionRuntimeOnly(project(":distributionsNative"))
 }
 
 classycle {

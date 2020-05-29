@@ -62,9 +62,7 @@ dependencies {
     testImplementation(testFixtures(project(":baseServices")))
     testImplementation(testFixtures(project(":platformNative")))
 
-    testRuntimeOnly(project(":runtimeApiInfo"))
-
-    integTestRuntimeOnly(project(":testingJunitPlatform"))
+    integTestDistributionRuntimeOnly(project(":distributionsCore"))
 }
 
 strictCompile {

@@ -40,7 +40,7 @@ dependencies {
     integTestImplementation(testLibrary("jetty"))
     testLibraries("sshd").forEach { integTestImplementation(it) }
 
-    integTestRuntimeOnly(project(":runtimeApiInfo"))
+    integTestDistributionRuntimeOnly(project(":distributionsCore"))
 }
 
 testFilesCleanup {

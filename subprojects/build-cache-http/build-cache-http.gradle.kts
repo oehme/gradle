@@ -36,5 +36,5 @@ dependencies {
 
     integTestImplementation(testLibrary("jetty"))
 
-    integTestRuntimeOnly(project(":runtimeApiInfo"))
+    integTestDistributionRuntimeOnly(project(":distributionsCore"))
 }

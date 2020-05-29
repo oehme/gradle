@@ -58,21 +58,14 @@ dependencies {
     testImplementation(testFixtures(project(":core")))
     testImplementation(testFixtures(project(":logging")))
 
-    testRuntimeOnly(project(":toolingApi"))
-    testRuntimeOnly(project(":testKit"))
-    testRuntimeOnly(project(":runtimeApiInfo"))
+    testRuntimeOnly(project(":distributionsCore")) {
+        because("Some tests use the project builder which requires basic Gradle services to be available.")
+    }
 
     integTestImplementation(project(":baseServicesGroovy"))
     integTestImplementation(library("jetbrains_annotations"))
 
-    integTestRuntimeOnly(project(":toolingApiBuilders"))
-    integTestRuntimeOnly(project(":runtimeApiInfo"))
-    integTestRuntimeOnly(project(":testingJunitPlatform"))
-    integTestRuntimeOnly(project(":codeQuality"))
-
-    integTestRuntimeOnly(project(":kotlinDsl"))
-    integTestRuntimeOnly(project(":kotlinDslProviderPlugins"))
-    integTestRuntimeOnly(project(":apiMetadata"))
+    integTestDistributionRuntimeOnly(project(":distributionsCore"))
 }
 
 testFilesCleanup {

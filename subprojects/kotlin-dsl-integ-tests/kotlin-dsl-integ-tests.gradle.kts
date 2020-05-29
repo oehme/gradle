@@ -34,7 +34,7 @@ dependencies {
     integTestImplementation(project(":internalTesting"))
     integTestImplementation("com.squareup.okhttp3:mockwebserver:3.9.1")
 
-    integTestRuntimeOnly(project(":distributionsFull"))
+    integTestDistributionRuntimeOnly(project(":distributionsFull"))
 }
 
 val pluginBundles = listOf(

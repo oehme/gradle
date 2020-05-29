@@ -34,7 +34,8 @@ dependencies {
     integTestImplementation(library("commons_io"))
     integTestImplementation(testLibrary("littleproxy"))
     integTestImplementation(testLibrary("jetty"))
-    integTestRuntimeOnly(project(":runtimeApiInfo"))
+
+    integTestDistributionRuntimeOnly(project(":distributionsCore"))
 }
 
 testFilesCleanup {

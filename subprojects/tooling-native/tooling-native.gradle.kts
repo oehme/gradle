@@ -30,13 +30,15 @@ dependencies {
     implementation(project(":languageNative"))
     implementation(project(":testingNative"))
     implementation(project(":toolingApi"))
-    implementation(project(":ide")) // To pick up various builders (which should live somewhere else)
+    implementation(project(":ide")) {
+        because("To pick up various builders (which should live somewhere else)")
+    }
 
     implementation(library("guava"))
 
     testImplementation(testFixtures(project(":platformNative")))
 
-    testRuntimeOnly(project(":runtimeApiInfo"))
+    crossVersionTestDistributionRuntimeOnly(project(":distributionsNative"))
 }
 
 integrationTestUsesToolingApiJar()

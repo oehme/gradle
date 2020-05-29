@@ -30,15 +30,14 @@ dependencies {
     testImplementation(project(":resources"))
     testImplementation(testFixtures(project(":core")))
 
-    testRuntimeOnly(project(":runtimeApiInfo"))
-
     testFixturesApi(testFixtures(project(":languageJvm")))
     testFixturesImplementation(project(":core"))
     testFixturesImplementation(project(":internalTesting"))
     testFixturesImplementation(project(":baseServices"))
 
     integTestImplementation(library("commons_lang"))
-    integTestRuntimeOnly(project(":plugins"))
+
+    integTestDistributionRuntimeOnly(project(":distributionsCore"))
 }
 
 classycle {

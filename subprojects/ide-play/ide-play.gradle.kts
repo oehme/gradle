@@ -54,8 +54,7 @@ dependencies {
     testImplementation(testFixtures(project(":platformPlay")))
     testImplementation(testFixtures(project(":ide")))
 
-    integTestRuntimeOnly(project(":compositeBuilds"))
-    integTestRuntimeOnly(project(":runtimeApiInfo"))
+    integTestDistributionRuntimeOnly(project(":distributionsCore"))
 
     integTestRuntimeResources(testFixtures(project(":platformPlay")))
 }

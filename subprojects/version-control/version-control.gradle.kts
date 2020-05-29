@@ -51,7 +51,5 @@ dependencies {
     testFixturesImplementation(library("guava"))
 
     integTestImplementation(project(":launcher"))
-    integTestRuntimeOnly(project(":pluginDevelopment"))
-    integTestRuntimeOnly(project(":testKit"))
-    integTestRuntimeOnly(project(":runtimeApiInfo"))
+    integTestDistributionRuntimeOnly(project(":distributionsBasics"))
 }

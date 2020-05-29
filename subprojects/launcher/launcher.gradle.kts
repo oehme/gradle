@@ -53,7 +53,6 @@ dependencies {
     testImplementation(testFixtures(project(":logging")))
     testImplementation(testFixtures(project(":toolingApi")))
 
-    testRuntimeOnly(project(":runtimeApiInfo"))
     testRuntimeOnly(project(":kotlinDsl"))
 
     integTestImplementation(project(":persistentCache"))
@@ -62,9 +61,9 @@ dependencies {
     integTestImplementation(library("guava"))
     integTestImplementation(library("commons_lang"))
     integTestImplementation(library("commons_io"))
-    integTestRuntimeOnly(project(":plugins"))
-    integTestRuntimeOnly(project(":languageNative")) {
-        because("for 'ProcessCrashHandlingIntegrationTest.session id of daemon is different from daemon client'")
+
+    integTestDistributionRuntimeOnly(project(":distributionsNative")) {
+        because("'native' distribution requried for 'ProcessCrashHandlingIntegrationTest.session id of daemon is different from daemon client'")
     }
 }
 

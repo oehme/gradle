@@ -29,7 +29,7 @@ dependencies {
 
     performanceTestImplementation(project(":internalIntegTesting"))
 
-    performanceTestRuntimeOnly(project(":distributionsFull")) {
+    performanceTestDistributionRuntimeOnly(project(":distributionsFull")) {
         because("so that all Gradle features are available")
     }
 }

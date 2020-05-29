@@ -33,7 +33,5 @@ dependencies {
     testImplementation(project(":coreApi"))
     testImplementation(testFixtures(project(":core")))
 
-    testRuntimeOnly(project(":runtimeApiInfo"))
-    testRuntimeOnly(project(":workers"))
-    testRuntimeOnly(project(":dependencyManagement"))
+    integTestDistributionRuntimeOnly(project(":distributionsCore"))
 }

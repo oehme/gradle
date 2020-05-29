@@ -25,14 +25,14 @@ dependencies {
     testImplementation(project(":snapshots"))
     testImplementation(project(":processServices"))
 
-    testRuntimeOnly(project(":runtimeApiInfo"))
-
     testFixturesApi(project(":core"))
     testFixturesApi(project(":fileCollections"))
     testFixturesApi(testFixtures(project(":modelCore")))
     testFixturesImplementation(library("guava"))
     testFixturesApi(testFixtures(project(":modelCore")))
     testFixturesApi(testFixtures(project(":diagnostics")))
+
+    integTestDistributionRuntimeOnly(project(":distributionsCore"))
 }
 
 classycle {

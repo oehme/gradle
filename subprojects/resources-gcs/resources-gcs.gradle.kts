@@ -29,5 +29,6 @@ dependencies {
     integTestImplementation(project(":modelCore"))
     integTestImplementation(library("commons_io"))
     integTestImplementation(testLibrary("jetty"))
-    integTestRuntimeOnly(project(":runtimeApiInfo"))
+
+    integTestDistributionRuntimeOnly(project(":distributionsCore"))
 }

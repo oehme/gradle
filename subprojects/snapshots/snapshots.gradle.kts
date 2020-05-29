@@ -43,18 +43,11 @@ dependencies {
     testImplementation(testFixtures(project(":fileCollections")))
     testImplementation(testFixtures(project(":messaging")))
 
-    testRuntimeOnly(project(":runtimeApiInfo"))
-    testRuntimeOnly(project(":workers"))
-    testRuntimeOnly(project(":dependencyManagement"))
-
     testFixturesImplementation(project(":baseServices"))
     testFixturesImplementation(project(":coreApi"))
     testFixturesImplementation(project(":fileCollections"))
 
-    integTestRuntimeOnly(project(":apiMetadata"))
-    integTestRuntimeOnly(project(":kotlinDsl"))
-    integTestRuntimeOnly(project(":kotlinDslProviderPlugins"))
-    integTestRuntimeOnly(project(":kotlinDslToolingBuilders"))
+    integTestDistributionRuntimeOnly(project(":distributionsCore"))
 }
 
 afterEvaluate {

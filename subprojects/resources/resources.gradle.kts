@@ -21,6 +21,5 @@ dependencies {
 
     testImplementation(testFixtures(project(":core")))
 
-    integTestImplementation(project(":internalIntegTesting"))
-    integTestRuntimeOnly(project(":runtimeApiInfo"))
+    integTestDistributionRuntimeOnly(project(":distributionsCore"))
 }

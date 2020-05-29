@@ -27,10 +27,7 @@ import org.gradle.api.provider.Provider
 import org.gradle.api.provider.ProviderFactory
 import org.gradle.gradlebuild.packaging.ShadedJar
 import org.gradle.gradlebuild.testing.integrationtests.cleanup.CleanupExtension
-import org.gradle.internal.classloader.ClasspathHasher
-import org.gradle.internal.classpath.DefaultClassPath
 import org.gradle.kotlin.dsl.*
-import org.gradle.kotlin.dsl.support.serviceOf
 import java.io.File
 import kotlin.collections.set
 
@@ -47,10 +44,8 @@ class DistributionTestingPlugin : Plugin<Project> {
             setJvmArgsOfTestJvm()
             setSystemPropertiesOfTestJVM(project)
             configureGradleTestEnvironment(
-                rootProject.providers,
                 rootProject.layout,
-                rootProject.base,
-                rootProject.objects
+                rootProject.base
             )
             addSetUpAndTearDownActions(project)
         }
@@ -62,8 +57,26 @@ class DistributionTestingPlugin : Plugin<Project> {
                 val toolingApiShadedJar: ShadedJar by toolingApi.tasks
                 toolingApiShadedJar.jarFile.get().asFile.parentFile
             })
+            val prefix = when { // TODO clean this up !!!
+                name.contains("performance", true) -> "performanceTest"
+                name.contains("distributedFlakinessDetection", true) -> "performanceTest"
+                name.contains("integ", true) -> "integTest"
+                name.contains("crossVersion", true) -> "crossVersionTest"
+                name.contains("smoke", true) -> "smokeTest"
+                else -> name
+            }
+            gradleInstallationForTest.gradleHomeDir.setFrom(
+                if (executerRequiresDistribution(name)) {
+                    configurations["${prefix}DistributionRuntimeClasspath"]
+                } else {
+                    configurations["${prefix}RuntimeClasspath"]
+                }
+            )
         }
     }
+
+    private
+    fun executerRequiresDistribution(taskName: String) = !taskName.startsWith("embedded")
 
     // TODO: Replace this with something in the Gradle API to make this transition easier
     private
@@ -84,15 +97,13 @@ class DistributionTestingPlugin : Plugin<Project> {
     }
 
     private
-    fun DistributionTest.configureGradleTestEnvironment(providers: ProviderFactory, layout: ProjectLayout, basePluginConvention: BasePluginConvention, objects: ObjectFactory) {
+    fun DistributionTest.configureGradleTestEnvironment(layout: ProjectLayout, basePluginConvention: BasePluginConvention) {
 
         val projectDirectory = layout.projectDirectory
 
         gradleInstallationForTest.apply {
-            gradleUserHomeDir.set(projectDirectory.dir("intTestHomeDir/unknown"))
-            gradleGeneratedApiJarCacheDir.set(defaultGradleGeneratedApiJarCacheDirProvider(providers, layout))
+            gradleUserHomeDir.set(projectDirectory.dir("intTestHomeDir"))
             daemonRegistry.set(layout.buildDirectory.dir("daemon"))
-            gradleHomeDir.set(layout.buildDirectory.dir("distributions"))
             gradleSnippetsDir.set(layout.projectDirectory.dir("subprojects/docs/src/snippets"))
         }
 
@@ -123,29 +134,3 @@ class DistributionTestingPlugin : Plugin<Project> {
         }
     }
 }
-
-
-fun DistributionTest.defaultGradleGeneratedApiJarCacheDirProvider(providers: ProviderFactory, layout: ProjectLayout): Provider<Directory> {
-    val projectName = project.name
-    val projectVersion = project.version
-    val classpathHasher = project.serviceOf<ClasspathHasher>()
-    return providers.provider { defaultGeneratedGradleApiJarCacheDir(layout, projectName, projectVersion, classpathHasher) }
-}
-
-
-/**
- * Computes a project and classpath specific `intTestHomeDir/generatedApiJars` directory.
- */
-private
-fun DistributionTest.defaultGeneratedGradleApiJarCacheDir(
-    layout: ProjectLayout,
-    projectName: String,
-    projectVersion: Any,
-    classpathHasher: ClasspathHasher
-): Directory =
-    layout.projectDirectory.dir("intTestHomeDir/generatedApiJars/$projectVersion/$projectName-${classpathHash(classpathHasher)}")
-
-
-private
-fun DistributionTest.classpathHash(classpathHasher: ClasspathHasher) =
-    classpathHasher.hash(DefaultClassPath.of(classpath))

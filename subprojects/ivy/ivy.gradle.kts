@@ -49,7 +49,6 @@ dependencies {
     testImplementation(testFixtures(project(":modelCore")))
     testImplementation(testFixtures(project(":platformBase")))
     testImplementation(testFixtures(project(":dependencyManagement")))
-    testRuntimeOnly(project(":runtimeApiInfo"))
 
     integTestImplementation(project(":ear"))
     integTestImplementation(library("slf4j_api"))
@@ -72,7 +71,8 @@ dependencies {
     testFixturesImplementation(library("slf4j_api"))
     testLibraries("sshd").forEach { testFixturesImplementation(it) }
 
-    integTestRuntimeOnly(project(":kotlinDslProviderPlugins"))
+    integTestDistributionRuntimeOnly(project(":distributionsCore"))
+    crossVersionTestDistributionRuntimeOnly(project(":distributionsCore"))
 }
 
 testFilesCleanup {

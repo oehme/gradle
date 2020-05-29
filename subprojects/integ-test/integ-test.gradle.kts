@@ -45,8 +45,8 @@ dependencies {
     integTestImplementation(testFixtures(project(":platformNative")))
     integTestImplementation(library("jgit"))
 
-    integTestRuntimeOnly(project(":distributionsFull"))
-    crossVersionTestRuntimeOnly(project(":distributionsFull"))
+    integTestDistributionRuntimeOnly(project(":distributionsFull"))
+    crossVersionTestDistributionRuntimeOnly(project(":distributionsFull"))
 }
 
 tasks.withType<IntegrationTest>().configureEach {

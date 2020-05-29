@@ -2,9 +2,7 @@ plugins {
     gradlebuild.distribution.`plugins-api-java`
 }
 
-configurations {
-    create("reports")
-}
+val implementationResources: Configuration by configurations.creating
 
 repositories {
     googleApisJs()
@@ -23,21 +21,18 @@ dependencies {
     implementation(library("inject"))
     implementation(library("jatl"))
 
+    implementationResources("jquery:jquery.min:3.4.1@js")
+
     testImplementation(project(":processServices"))
     testImplementation(project(":baseServicesGroovy"))
     testImplementation(testLibrary("jsoup"))
     testImplementation(testFixtures(project(":core")))
 
-    testRuntimeOnly(project(":runtimeApiInfo"))
-    testRuntimeOnly(project(":workers"))
-    testRuntimeOnly(project(":dependencyManagement"))
+    testRuntimeOnly(project(":distributionsCore")) {
+        because("ProjectBuilder tests load services from a Gradle distribution.")
+    }
 
-    integTestRuntimeOnly(project(":codeQuality"))
-    integTestRuntimeOnly(project(":jacoco"))
-
-    integTestRuntimeOnly(project(":testingJunitPlatform"))
-
-    add("reports", "jquery:jquery.min:3.4.1@js")
+    integTestDistributionRuntimeOnly(project(":distributionsCore"))
 }
 
 strictCompile {
@@ -52,7 +47,7 @@ classycle {
 val generatedResourcesDir = gradlebuildJava.generatedResourcesDir
 
 val reportResources by tasks.registering(Copy::class) {
-    from(configurations["reports"])
+    from(implementationResources)
     into("$generatedResourcesDir/org/gradle/reporting")
 }
 sourceSets.main {

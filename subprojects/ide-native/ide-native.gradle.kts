@@ -45,8 +45,6 @@ dependencies {
     testImplementation(testFixtures(project(":languageNative")))
     testImplementation(testFixtures(project(":versionControl")))
 
-    testRuntimeOnly(project(":runtimeApiInfo"))
-
     integTestImplementation(project(":native"))
     integTestImplementation(library("commons_io"))
     integTestImplementation(library("jgit"))
@@ -55,6 +53,8 @@ dependencies {
     testFixturesImplementation(library("plist"))
     testFixturesImplementation(library("guava"))
     testFixturesImplementation(testFixtures(project(":ide")))
+
+    integTestDistributionRuntimeOnly(project(":distributionsCore"))
 }
 
 integrationTestUsesSampleDir("subprojects/ide-native/src/main")

@@ -16,7 +16,7 @@ dependencies {
     performanceTestImplementation(testLibrary("jetty"))
     performanceTestImplementation(testFixtures(project(":toolingApi")))
 
-    performanceTestRuntimeOnly(project(":distributionsFull")) {
+    performanceTestDistributionRuntimeOnly(project(":distributionsFull")) {
         because("so that all Gradle features are available")
     }
 }

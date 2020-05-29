@@ -42,11 +42,11 @@ import org.gradle.api.tasks.compile.CompileOptions
 import org.gradle.api.tasks.compile.GroovyCompile
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.api.tasks.testing.Test
-import org.gradle.build.ClasspathManifest
 import org.gradle.gradlebuild.BuildEnvironment
 import org.gradle.gradlebuild.BuildEnvironment.agentNum
 import org.gradle.gradlebuild.java.AvailableJavaInstallationsPlugin
 import org.gradle.gradlebuild.java.JavaInstallation
+import org.gradle.gradlebuild.packaging.ClasspathManifest
 import org.gradle.gradlebuild.versioning.buildVersion
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.kotlin.dsl.*
@@ -155,6 +155,7 @@ class UnitTestAndCompilePlugin : Plugin<Project> {
                 }
             )
         }
+        // TODO GET RID OF THIS!
         rootProject.subprojects.forEach { p ->
             p.plugins.withType<UnitTestAndCompilePlugin> {
                 classpathManifest {

@@ -58,14 +58,8 @@ dependencies {
     testImplementation(testFixtures(project(":modelCore")))
     testImplementation(testFixtures(project(":dependencyManagement")))
 
-    testRuntimeOnly(project(":runtimeApiInfo"))
-
     integTestImplementation(project(":ear"))
     integTestImplementation(testLibrary("jetty"))
-    integTestRuntimeOnly(project(":resourcesS3"))
-    integTestRuntimeOnly(project(":resourcesSftp"))
-    integTestRuntimeOnly(project(":apiMetadata"))
-    integTestRuntimeOnly(project(":kotlinDslProviderPlugins"))
 
     testFixturesApi(project(":baseServices")) {
         because("Test fixtures export the Action class")
@@ -74,6 +68,9 @@ dependencies {
     testFixturesImplementation(project(":internalTesting"))
     testFixturesImplementation(project(":internalIntegTesting"))
     testFixturesImplementation(project(":dependencyManagement"))
+
+    integTestDistributionRuntimeOnly(project(":distributionsCore"))
+    crossVersionTestDistributionRuntimeOnly(project(":distributionsCore"))
 }
 
 strictCompile {

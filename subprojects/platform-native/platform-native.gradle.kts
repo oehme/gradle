@@ -41,12 +41,6 @@ dependencies {
     implementation(library("gson"))
     implementation(library("inject"))
 
-    testRuntimeOnly(project(":runtimeApiInfo"))
-
-    integTestRuntimeOnly(project(":maven"))
-    // Required to test visual studio project file generation for generated sources
-    integTestRuntimeOnly(project(":ideNative"))
-
     testFixturesApi(project(":resources"))
     testFixturesApi(testFixtures(project(":ide")))
     testFixturesImplementation(testFixtures(project(":core")))
@@ -69,6 +63,10 @@ dependencies {
     testImplementation(testFixtures(project(":diagnostics")))
     testImplementation(testFixtures(project(":baseServices")))
     testImplementation(testFixtures(project(":snapshots")))
+
+    integTestDistributionRuntimeOnly(project(":distributionsNative")) {
+        because("Required 'ideNative' to test visual studio project file generation for generated sources")
+    }
 }
 
 classycle {

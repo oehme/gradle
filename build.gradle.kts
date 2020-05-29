@@ -15,7 +15,7 @@
  */
 
 plugins {
-    base                                     // Build Distribution: 'base.distsDirName' is used for the location of the distribution, might move this to "subprojects/distributions/build/..."
+    base
     gradlebuild.security                     // Check: Ensure sure we only use secure repositories
 
     gradlebuild.lifecycle                    // CI: Add lifecycle tasks to for the CI pipeline (currently needs to be applied early as it might modify global properties)

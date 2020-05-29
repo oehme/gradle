@@ -27,7 +27,7 @@ dependencies {
     testImplementation(testFixtures(project(":core")))
     testRuntimeOnly(library("xerces"))
 
-    integTestRuntimeOnly(project(":runtimeApiInfo"))
+    integTestDistributionRuntimeOnly(project(":distributionsCore"))
 
     jmh("org.bouncycastle:bcprov-jdk15on:1.61")
     jmh("com.google.guava:guava:27.1-android")

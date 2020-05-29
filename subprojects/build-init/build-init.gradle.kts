@@ -51,13 +51,12 @@ dependencies {
     testImplementation(testFixtures(project(":platformNative")))
 
     testFixturesImplementation(project(":baseServices"))
+    testFixturesImplementation(project(":internalTesting"))
 
     integTestImplementation(project(":native"))
     integTestImplementation(testLibrary("jetty"))
 
-    testFixturesImplementation(project(":internalTesting"))
-
-    integTestRuntimeOnly(project(":distributionsFull"))
+    integTestDistributionRuntimeOnly(project(":distributionsCore"))
 }
 
 tasks {

@@ -68,8 +68,6 @@ dependencies {
     testImplementation(testLibrary("mockito_kotlin2"))
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-debug:1.3.3")
 
-    testRuntimeOnly(project(":runtimeApiInfo"))
-
     integTestImplementation(project(":jvmServices"))
     integTestImplementation(project(":toolingApi"))
     integTestImplementation(project(":platformJvm"))
@@ -82,12 +80,7 @@ dependencies {
     integTestImplementation(testFixtures(project(":dependencyManagement")))
     integTestImplementation(testFixtures(project(":jacoco")))
 
-    integTestRuntimeOnly(project(":apiMetadata"))
-    integTestRuntimeOnly(project(":toolingApiBuilders"))
-    integTestRuntimeOnly(project(":runtimeApiInfo"))
-    integTestRuntimeOnly(project(":testingJunitPlatform"))
-    integTestRuntimeOnly(project(":kotlinDsl"))
-    integTestRuntimeOnly(project(":kotlinDslProviderPlugins"))
+    integTestDistributionRuntimeOnly(project(":distributionsCore"))
 }
 
 classycle {

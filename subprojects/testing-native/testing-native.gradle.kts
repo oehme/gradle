@@ -48,7 +48,5 @@ dependencies {
     testImplementation(testFixtures(project(":languageNative")))
     testImplementation(testFixtures(project(":ide")))
 
-    testRuntimeOnly(project(":runtimeApiInfo"))
-
-    integTestRuntimeOnly(project(":ideNative"))
+    integTestDistributionRuntimeOnly(project(":distributionsNative"))
 }

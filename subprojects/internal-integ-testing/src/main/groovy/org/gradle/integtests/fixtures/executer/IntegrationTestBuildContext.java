@@ -52,12 +52,7 @@ public class IntegrationTestBuildContext {
     }
 
     public TestFile getGradleUserHomeDir() {
-        return file("integTest.gradleUserHomeDir", "intTestHomeDir").file("worker-1");
-    }
-
-    @Nullable
-    public TestFile getGradleGeneratedApiJarCacheDir() {
-        return optionalFile("integTest.gradleGeneratedApiJarCacheDir");
+        return file("integTest.gradleUserHomeDir", "intTestHomeDir/distributions-unknown");
     }
 
     public TestFile getTmpDir() {

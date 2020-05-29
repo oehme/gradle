@@ -30,8 +30,6 @@ dependencies {
     testImplementation(testFixtures(project(":platformBase")))
     testImplementation(testFixtures(project(":plugins")))
 
-    testRuntimeOnly(project(":runtimeApiInfo"))
-
     integTestImplementation(library("commons_lang"))
     integTestImplementation(library("ant"))
 
@@ -44,6 +42,8 @@ dependencies {
     testFixturesImplementation(testFixtures(project(":languageJvm")))
 
     compileOnly("org.scala-sbt:zinc_2.12:1.3.5")
+
+    integTestDistributionRuntimeOnly(project(":distributionsCore"))
 }
 
 strictCompile {

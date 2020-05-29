@@ -58,8 +58,6 @@ dependencies {
     testImplementation(project(":resources"))
     testImplementation(project(":baseServicesGroovy"))
 
-    testRuntimeOnly(project(":runtimeApiInfo"))
-
     integTestImplementation(library("ant"))
     integTestRuntimeOnly(project(":compositeBuilds"))
     integTestRuntimeOnly(project(":idePlay"))
@@ -83,6 +81,8 @@ dependencies {
     testImplementation(testFixtures(project(":dependencyManagement")))
     testImplementation(testFixtures(project(":diagnostics")))
     testImplementation(testFixtures(project(":platformBase")))
+
+    integTestDistributionRuntimeOnly(project(":distributionsFull"))
 
     integTestRuntimeResources(testFixtures(project(":platformPlay")))
 }

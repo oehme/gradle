@@ -1,19 +1,22 @@
 plugins {
-    gradlebuild.internal.java
-    gradlebuild.distributions
+    gradlebuild.distribution.packaging
+    gradlebuild.`add-verify-production-environment-task`
+    gradlebuild.install
 }
 
 dependencies {
-    runtimeOnly(project(":distributionsJvm"))
-    runtimeOnly(project(":distributionsNative"))
-    runtimeOnly(project(":distributionsPublishing"))
+    coreRuntimeOnly(platform(project(":corePlatform")))
 
-    runtimeOnly(project(":buildInit"))
-    runtimeOnly(project(":buildProfile"))
-    runtimeOnly(project(":antlr"))
+    pluginsRuntimeOnly(platform(project(":distributionsPublishing")))
+    pluginsRuntimeOnly(platform(project(":distributionsJvm")))
+    pluginsRuntimeOnly(platform(project(":distributionsNative")))
+
+    pluginsRuntimeOnly(project(":buildInit"))
+    pluginsRuntimeOnly(project(":buildProfile"))
+    pluginsRuntimeOnly(project(":antlr"))
 
     // The following are scheduled to be removed from the distribution completely in Gradle 7.0
-    runtimeOnly(project(":javascript"))
-    runtimeOnly(project(":platformPlay"))
-    runtimeOnly(project(":idePlay"))
+    pluginsRuntimeOnly(project(":javascript"))
+    pluginsRuntimeOnly(project(":platformPlay"))
+    pluginsRuntimeOnly(project(":idePlay"))
 }

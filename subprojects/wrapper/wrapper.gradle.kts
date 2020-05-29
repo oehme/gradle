@@ -37,15 +37,12 @@ dependencies {
     integTestImplementation(testLibrary("littleproxy"))
     integTestImplementation(testLibrary("jetty"))
 
-    integTestRuntimeOnly(project(":runtimeApiInfo"))
-    integTestRuntimeOnly(project(":buildInit"))
-
     crossVersionTestImplementation(project(":logging"))
     crossVersionTestImplementation(project(":persistentCache"))
     crossVersionTestImplementation(project(":launcher"))
 
-    crossVersionTestRuntimeOnly(project(":runtimeApiInfo"))
-    crossVersionTestRuntimeOnly(project(":buildInit"))
+    integTestDistributionRuntimeOnly(project(":distributionsFull"))
+    crossVersionTestDistributionRuntimeOnly(project(":distributionsFull"))
 }
 
 strictCompile {

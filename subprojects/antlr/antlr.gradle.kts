@@ -41,7 +41,8 @@ dependencies {
     testImplementation(project(":baseServicesGroovy"))
     testImplementation(project(":fileCollections"))
     testImplementation(testFixtures(project(":core")))
-    testRuntimeOnly(project(":runtimeApiInfo"))
+
+    integTestDistributionRuntimeOnly(project(":distributionsCore"))
 }
 
 classycle {

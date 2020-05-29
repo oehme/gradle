@@ -35,9 +35,9 @@ dependencies {
     testImplementation(testFixtures(project(":platformBase")))
     testImplementation(testFixtures(project(":platformNative")))
 
-    testRuntimeOnly(project(":runtimeApiInfo"))
-
     integTestImplementation(library("slf4j_api"))
+
+    integTestDistributionRuntimeOnly(project(":distributionsCore"))
 }
 
 strictCompile {

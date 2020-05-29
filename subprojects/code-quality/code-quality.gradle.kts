@@ -36,11 +36,12 @@ dependencies {
 
     testImplementation(project(":fileCollections"))
     testImplementation(testFixtures(project(":core")))
-    testRuntimeOnly(project(":runtimeApiInfo"))
 
     testFixturesImplementation(project(":core"))
     testFixturesImplementation(project(":coreApi"))
     testFixturesImplementation(project(":baseServices"))
+
+    integTestDistributionRuntimeOnly(project(":distributionsCore"))
 }
 
 classycle {

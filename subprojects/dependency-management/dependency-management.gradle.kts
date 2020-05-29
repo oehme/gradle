@@ -68,8 +68,6 @@ dependencies {
     testImplementation(testFixtures(project(":snapshots")))
     testImplementation(testFixtures(project(":execution")))
 
-    testRuntimeOnly(project(":runtimeApiInfo"))
-
     integTestImplementation(project(":buildOption"))
     integTestImplementation(library("jansi"))
     integTestImplementation(library("ansi_control_sequence_util"))
@@ -106,8 +104,8 @@ dependencies {
         because("Groovy compiler bug leaks internals")
     }
 
-    integTestRuntimeOnly(project(":distributionsMinimal"))
-    integTestRuntimeOnly(project(":distributionsMinimal")) // TODO publishing?
+    integTestDistributionRuntimeOnly(project(":distributionsCore"))
+    crossVersionTestDistributionRuntimeOnly(project(":distributionsCore"))
 }
 
 classycle {
@@ -116,10 +114,6 @@ classycle {
 
 testFilesCleanup {
     policy.set(WhenNotEmpty.REPORT)
-}
-
-tasks.classpathManifest {
-    additionalProjects.add(":runtimeApiInfo")
 }
 
 tasks.clean {

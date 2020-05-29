@@ -157,7 +157,7 @@ class LifecyclePlugin : Plugin<Project> {
             group = "verification"
             dependsOn(
                 "compileAll", ":docs:checkstyleApi", "codeQuality", ":internalBuildReports:allIncubationReportsZip",
-                ":distributions:checkBinaryCompatibility", ":docs:javadocAll",
+                ":architectureTest:checkBinaryCompatibility", ":docs:javadocAll",
                 ":architectureTest:test", ":toolingApi:toolingApiShadedJar")
         }
     }

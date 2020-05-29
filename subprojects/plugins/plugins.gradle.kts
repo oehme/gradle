@@ -67,8 +67,6 @@ dependencies {
     testImplementation(testFixtures(project(":languageGroovy")))
     testImplementation(testFixtures(project(":diagnostics")))
 
-    testRuntimeOnly(project(":runtimeApiInfo"))
-
     testFixturesImplementation(testFixtures(project(":core")))
     testFixturesImplementation(project(":baseServicesGroovy"))
     testFixturesImplementation(project(":fileCollections"))
@@ -78,7 +76,7 @@ dependencies {
     testFixturesImplementation(project(":resources"))
     testFixturesImplementation(library("guava"))
 
-    integTestRuntimeOnly(project(":distributionsMinimal")) //TODO publishing?
+    integTestDistributionRuntimeOnly(project(":distributionsCore"))
 }
 
 strictCompile {

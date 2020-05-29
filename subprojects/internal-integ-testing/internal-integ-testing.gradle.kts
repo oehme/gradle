@@ -78,8 +78,7 @@ dependencies {
     }
     implementation(testFixtures(project(":core")))
 
-    testRuntimeOnly(project(":runtimeApiInfo"))
-    testRuntimeOnly(project(":workers"))
+    integTestDistributionRuntimeOnly(project(":distributionsCore"))
 }
 
 classycle {

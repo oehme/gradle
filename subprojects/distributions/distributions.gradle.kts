@@ -21,9 +21,6 @@ import org.gradle.plugins.install.Install
 
 plugins {
     gradlebuild.internal.java
-    gradlebuild.`add-verify-production-environment-task`
-    gradlebuild.install
-    gradlebuild.`binary-compatibility`
 }
 
 tasks.withType<AbstractArchiveTask>().configureEach {
@@ -54,7 +51,7 @@ dependencies {
     integTestImplementation(library("commons_io"))
     integTestImplementation(library("ant"))
 
-    integTestRuntimeOnly(project(":runtimeApiInfo"))
+    // integTestRuntimeOnly(project(":runtimeApiInfo"))
 }
 
 val zipRootFolder = "gradle-$version"
@@ -74,13 +71,8 @@ val binDistImage = copySpec {
     }
 }
 
-val binWithDistDocImage = copySpec {
-    with(binDistImage)
-    from(gradleGettingStarted)
-}
-
 val allDistImage = copySpec {
-    with(binWithDistDocImage)
+    with(binDistImage)
     // TODO: Change this to a src publication too
     rootProject.subprojects {
         val subproject = this
@@ -114,7 +106,7 @@ val allZip = tasks.register<Zip>("allZip") {
 val binZip = tasks.register<Zip>("binZip") {
     archiveClassifier.set("bin")
     into(zipRootFolder) {
-        with(binWithDistDocImage)
+        with(binDistImage)
     }
 }
 

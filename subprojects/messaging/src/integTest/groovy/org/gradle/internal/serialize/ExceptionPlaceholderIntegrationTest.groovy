@@ -119,10 +119,10 @@ class ExceptionPlaceholderIntegrationTest extends AbstractIntegrationSpec {
                 containsString("oh noes (2 failures)"))
         result.testClass("example.Issue9487Test")
             .assertTestFailed("allCausesShouldBeCaptured",
-                containsString("Cause 1: java.lang.AssertionError: error 1"))
+                containsString("java.lang.AssertionError: error 1"))
         result.testClass("example.Issue9487Test")
             .assertTestFailed("allCausesShouldBeCaptured",
-                containsString("Cause 2: java.lang.RuntimeException: error 2"))
+                containsString("java.lang.RuntimeException: error 2"))
     }
 
     @IgnoreIf({ GradleContextualExecuter.embedded })

@@ -28,14 +28,11 @@ dependencies {
 
     integTestImplementation(library("ansi_control_sequence_util"))
 
-    integTestRuntimeOnly(project(":apiMetadata"))
-    integTestRuntimeOnly(project(":runtimeApiInfo"))
-    integTestRuntimeOnly(project(":kotlinDslProviderPlugins"))
-    integTestRuntimeOnly(project(":testingJunitPlatform"))
-
     testFixturesImplementation(project(":baseServices"))
     testFixturesImplementation(testFixtures(project(":core")))
     testFixturesImplementation(library("slf4j_api"))
+
+    integTestDistributionRuntimeOnly(project(":distributionsCore"))
 }
 
 classycle {

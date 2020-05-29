@@ -51,8 +51,6 @@ dependencies {
     testImplementation(testFixtures(project(":logging")))
     testImplementation(testFixtures(project(":baseServices")))
 
-    testRuntimeOnly(project(":runtimeApiInfo"))
-
     testFixturesImplementation(project(":baseServices"))
     testFixturesImplementation(project(":modelCore"))
     testFixturesImplementation(project(":internalTesting"))
@@ -60,7 +58,7 @@ dependencies {
     testFixturesImplementation(library("guava"))
     testFixturesImplementation(testLibrary("jsoup"))
 
-    integTestRuntimeOnly(project(":testingJunitPlatform"))
+    integTestDistributionRuntimeOnly(project(":distributionsCore"))
 }
 
 strictCompile {

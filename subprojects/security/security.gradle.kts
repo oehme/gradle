@@ -35,9 +35,6 @@ dependencies {
     }
 
     testImplementation(testFixtures(project(":core")))
-    testRuntimeOnly(project(":dependencyManagement"))
-    testRuntimeOnly(project(":workers"))
-    testRuntimeOnly(project(":runtimeApiInfo"))
 
     testFixturesImplementation(project(":baseServices"))
     testFixturesImplementation(library("slf4j_api"))

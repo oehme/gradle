@@ -38,11 +38,7 @@ dependencies {
 
     testImplementation(testFixtures(project(":core")))
 
-    testRuntimeOnly(project(":runtimeApiInfo"))
-    testRuntimeOnly(project(":workers"))
-
-    integTestRuntimeOnly(project(":ivy"))
-    integTestRuntimeOnly(project(":maven"))
+    integTestDistributionRuntimeOnly(project(":distributionsCore"))
 }
 
 integrationTestUsesSampleDir("subprojects/publish/src/main")

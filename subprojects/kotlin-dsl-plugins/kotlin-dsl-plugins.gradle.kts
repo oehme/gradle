@@ -85,12 +85,8 @@ dependencies {
     integTestImplementation(project(":kotlinDslTestFixtures"))
     integTestImplementation(library("slf4j_api"))
     integTestImplementation(testLibrary("mockito_kotlin"))
-    integTestRuntimeOnly(project(":runtimeApiInfo"))
-    integTestRuntimeOnly(project(":apiMetadata"))
-    integTestRuntimeOnly(project(":pluginDevelopment"))
-    integTestRuntimeOnly(project(":toolingApiBuilders"))
-    integTestRuntimeOnly(project(":testingJunitPlatform"))
-    integTestRuntimeOnly(project(":kotlinDslProviderPlugins"))
+
+    integTestDistributionRuntimeOnly(project(":distributionsCore"))
 }
 
 classycle {

@@ -4,6 +4,10 @@ import accessors.groovy
 import accessors.java
 import org.gradle.api.Action
 import org.gradle.api.Project
+import org.gradle.api.attributes.Bundling
+import org.gradle.api.attributes.Category
+import org.gradle.api.attributes.LibraryElements
+import org.gradle.api.attributes.Usage
 import org.gradle.api.tasks.ClasspathNormalizer
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.SourceSet
@@ -19,16 +23,36 @@ enum class TestType(val prefix: String, val executers: List<String>, val libRepo
 }
 
 
-internal
-fun Project.addDependenciesAndConfigurations(testType: TestType) {
-    val prefix = testType.prefix
+fun Project.addDependenciesAndConfigurations(prefix: String, addInternalIntegTestingDependency: Boolean = true) {
     configurations {
         getByName("${prefix}TestImplementation") { extendsFrom(configurations["testImplementation"]) }
         getByName("${prefix}TestRuntimeOnly") { extendsFrom(configurations["testRuntimeOnly"]) }
+        val testDistributionRuntimeOnly = create("${prefix}TestDistributionRuntimeOnly") {
+            isVisible = false
+            isCanBeResolved = false
+            isCanBeConsumed = false
+        }
+        getByName("${prefix}TestRuntimeClasspath") {
+            extendsFrom(testDistributionRuntimeOnly)
+        }
+        create("${prefix}TestDistributionRuntimeClasspath") {
+            isVisible = false
+            isCanBeResolved = true
+            isCanBeConsumed = false
+            attributes {
+                attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named("gradle-distribution-jars"))
+                attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage.JAVA_RUNTIME))
+                attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category.LIBRARY))
+                attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.EMBEDDED))
+            }
+            extendsFrom(testDistributionRuntimeOnly)
+        }
     }
 
-    dependencies {
-        "${prefix}TestImplementation"(project(":internalIntegTesting"))
+    if (addInternalIntegTestingDependency) {
+        dependencies {
+            "${prefix}TestImplementation"(project(":internalIntegTesting"))
+        }
     }
 }
 
@@ -91,7 +115,7 @@ fun Project.createTestTask(name: String, executer: String, sourceSet: SourceSet,
  * Distributed test requires all dependencies to be declared
  */
 fun Project.integrationTestUsesSampleDir(vararg sampleDirs: String) {
-    tasks.withType<IntegrationTest>() {
+    tasks.withType<IntegrationTest>().configureEach {
         systemProperty("declaredSampleInputs", sampleDirs.joinToString(";"))
         inputs.files(rootProject.files(sampleDirs))
             .withPropertyName("autoTestedSamples")

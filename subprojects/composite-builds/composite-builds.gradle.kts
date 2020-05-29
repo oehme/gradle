@@ -37,12 +37,7 @@ dependencies {
     integTestImplementation(project(":buildOption"))
     integTestImplementation(project(":launcher"))
 
-    integTestRuntimeOnly(project(":toolingApiBuilders"))
-    integTestRuntimeOnly(project(":ide"))
-    integTestRuntimeOnly(project(":pluginDevelopment"))
-    integTestRuntimeOnly(project(":testKit"))
-
-    integTestRuntimeOnly(project(":runtimeApiInfo"))
+    integTestDistributionRuntimeOnly(project(":distributionsCore"))
 }
 
 testFilesCleanup {

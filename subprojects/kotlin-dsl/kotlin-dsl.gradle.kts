@@ -92,18 +92,11 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.3")
     testImplementation("org.awaitility:awaitility-kotlin:3.1.6")
 
-    testRuntimeOnly(project(":runtimeApiInfo"))
-
     integTestImplementation(project(":languageGroovy"))
     integTestImplementation(project(":internalTesting"))
     integTestImplementation(testLibrary("mockito_kotlin"))
 
-    integTestRuntimeOnly(project(":runtimeApiInfo"))
-    integTestRuntimeOnly(project(":apiMetadata"))
-    integTestRuntimeOnly(project(":pluginDevelopment"))
-    integTestRuntimeOnly(project(":toolingApiBuilders"))
-    integTestRuntimeOnly(project(":kotlinDslProviderPlugins"))
-    integTestRuntimeOnly(project(":testingJunitPlatform"))
+    integTestDistributionRuntimeOnly(project(":distributionsCore"))
 }
 
 classycle {
