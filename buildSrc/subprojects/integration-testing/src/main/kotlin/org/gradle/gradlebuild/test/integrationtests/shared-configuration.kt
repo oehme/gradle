@@ -4,11 +4,13 @@ import accessors.groovy
 import accessors.java
 import org.gradle.api.Action
 import org.gradle.api.Project
+import org.gradle.api.tasks.ClasspathNormalizer
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.*
 import org.gradle.plugins.ide.idea.IdeaPlugin
+import org.gradle.gradlebuild.versioning.buildVersion
 
 
 enum class TestType(val prefix: String, val executers: List<String>, val libRepoRequired: Boolean) {
@@ -95,10 +97,48 @@ fun Project.createTestTask(name: String, executer: String, sourceSet: SourceSet,
  * Distributed test requires all dependencies to be declared
  */
 fun Project.integrationTestUsesSampleDir(vararg sampleDirs: String) {
-    tasks.withType<IntegrationTest>() {
+    tasks.withType<IntegrationTest>().configureEach {
         systemProperty("declaredSampleInputs", sampleDirs.joinToString(";"))
         inputs.files(rootProject.files(sampleDirs))
             .withPropertyName("autoTestedSamples")
+            .withPathSensitivity(PathSensitivity.RELATIVE)
+    }
+}
+
+
+fun Project.integrationTestUsesKotlinDslPlugins() {
+    tasks.withType<IntegrationTest>().configureEach {
+        inputs.dir(project(":kotlinDslPlugins").buildDir.resolve("repository"))
+            .withPropertyName("localRepository")
+            .withPathSensitivity(PathSensitivity.RELATIVE)
+    }
+}
+
+
+fun Project.integrationTestUsesToolingApiFatJar() {
+    tasks.withType<IntegrationTest>().configureEach {
+        inputs.file(project(":toolingApi").buildDir.resolve("shaded-jar/gradle-tooling-api-shaded-${rootProject.buildVersion.baseVersion}.jar"))
+            .withPropertyName("fatToolingApiJar")
+            .withPathSensitivity(PathSensitivity.RELATIVE)
+            .withNormalizer(ClasspathNormalizer::class)
+    }
+}
+
+
+fun Project.integrationTestUsesToolingApiJar() {
+    tasks.withType<IntegrationTest>().configureEach {
+        inputs.dir(rootProject.buildDir.resolve("repo"))
+            .withPropertyName("toolingApiJarRepo")
+            .withPathSensitivity(PathSensitivity.RELATIVE)
+    }
+}
+
+
+// ""/bin/all/docs/src
+fun Project.integrationTestUsesDistribution(type: String = "bin") {
+    tasks.withType<IntegrationTest>().configureEach {
+        inputs.file(rootProject.buildDir.resolve("distributions/gradle-${rootProject.buildVersion.baseVersion}${if (type == "") ".jar" else "-$type.zip"}"))
+            .withPropertyName("distribution")
             .withPathSensitivity(PathSensitivity.RELATIVE)
     }
 }

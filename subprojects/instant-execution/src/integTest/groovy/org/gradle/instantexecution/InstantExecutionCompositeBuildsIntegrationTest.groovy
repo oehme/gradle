@@ -35,6 +35,17 @@ class InstantExecutionCompositeBuildsIntegrationTest extends AbstractInstantExec
         then:
         problems.assertFailureHasProblems(failure) {
             withUniqueProblems(expectedProblem)
+            withProblemsWithStackTraceCount(0)
+        }
+
+        when:
+        instantFails("help")
+
+        then:
+        instantExecution.assertStateLoaded()
+        problems.assertFailureHasProblems(failure) {
+            withUniqueProblems(expectedProblem)
+            withProblemsWithStackTraceCount(0)
         }
 
         when:
@@ -43,16 +54,8 @@ class InstantExecutionCompositeBuildsIntegrationTest extends AbstractInstantExec
         then:
         instantExecution.assertStateLoaded()
         problems.assertResultHasProblems(result) {
-            // TODO - should inform the user that composite builds do not work
-        }
-
-        when:
-        instantRun("help")
-
-        then:
-        instantExecution.assertStateLoaded()
-        problems.assertResultHasProblems(result) {
-            // TODO - should inform the user that composite builds do not work
+            withUniqueProblems(expectedProblem)
+            withProblemsWithStackTraceCount(0)
         }
     }
 }

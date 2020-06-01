@@ -17,7 +17,11 @@
 package org.gradle.instantexecution
 
 import org.gradle.testing.jacoco.plugins.fixtures.JavaProjectUnderTest
+import org.gradle.util.Requires
 
+import static org.gradle.util.TestPrecondition.JDK14_OR_EARLIER
+
+@Requires(JDK14_OR_EARLIER)
 class InstantExecutionJacocoIntegrationTest extends AbstractInstantExecutionIntegrationTest {
 
     def "can use jacoco"() {
@@ -49,6 +53,7 @@ class InstantExecutionJacocoIntegrationTest extends AbstractInstantExecutionInte
         problems.assertFailureHasProblems(failure) {
             withUniqueProblems(expectedStoreProblems)
             withTotalProblemsCount(expectedStoreProblemCount)
+            withProblemsWithStackTraceCount(0)
         }
 
         when:
@@ -59,6 +64,7 @@ class InstantExecutionJacocoIntegrationTest extends AbstractInstantExecutionInte
         problems.assertResultHasProblems(result) {
             withTotalProblemsCount(expectedLoadProblemCount)
             withUniqueProblems(expectedLoadProblems)
+            withProblemsWithStackTraceCount(0)
         }
         htmlReportDir.assertIsDir()
 
@@ -74,6 +80,7 @@ class InstantExecutionJacocoIntegrationTest extends AbstractInstantExecutionInte
         problems.assertFailureHasProblems(failure) {
             withTotalProblemsCount(expectedLoadProblemCount)
             withUniqueProblems(expectedLoadProblems)
+            withProblemsWithStackTraceCount(0)
         }
 
         when:
