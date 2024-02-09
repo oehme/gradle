@@ -30,7 +30,6 @@ import org.gradle.internal.normalization.java.impl.ClassMember
 import org.gradle.internal.normalization.java.impl.FieldMember
 import org.gradle.internal.normalization.java.impl.InnerClassMember
 import org.gradle.internal.normalization.java.impl.MethodMember
-import org.gradle.internal.normalization.java.impl.MethodStubbingApiMemberAdapter
 import org.gradle.internal.normalization.java.impl.SimpleAnnotationValue
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassVisitor
@@ -40,7 +39,7 @@ import java.util.Optional
 internal
 class KotlinApiClassExtractor : ApiClassExtractor(
     emptySet(),
-    { classWriter -> KotlinApiMemberWriter(MethodStubbingApiMemberAdapter(classWriter)) }
+    { classWriter -> KotlinApiMemberWriter(classWriter) }
 ) {
 
     override fun extractApiClassFrom(originalClassReader: ClassReader): Optional<ByteArray> {

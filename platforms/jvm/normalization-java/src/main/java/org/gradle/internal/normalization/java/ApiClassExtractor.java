@@ -19,7 +19,6 @@ package org.gradle.internal.normalization.java;
 import org.gradle.internal.hash.Hasher;
 import org.gradle.internal.normalization.java.impl.ApiMemberSelector;
 import org.gradle.internal.normalization.java.impl.ApiMemberWriter;
-import org.gradle.internal.normalization.java.impl.MethodStubbingApiMemberAdapter;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 
@@ -39,7 +38,7 @@ public class ApiClassExtractor {
     private final ApiMemberWriterFactory apiMemberWriterFactory;
 
     public ApiClassExtractor(Set<String> exportedPackages) {
-        this(exportedPackages, classWriter -> new ApiMemberWriter(new MethodStubbingApiMemberAdapter(classWriter)));
+        this(exportedPackages, ApiMemberWriter::new);
     }
 
     public ApiClassExtractor(Set<String> exportedPackages, ApiMemberWriterFactory apiMemberWriterFactory) {
@@ -80,7 +79,7 @@ public class ApiClassExtractor {
         }
         ClassWriter apiClassWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
         ApiMemberSelector visitor = new ApiMemberSelector(originalClassReader.getClassName(), apiMemberWriterFactory.makeApiMemberWriter(apiClassWriter), apiIncludesPackagePrivateMembers);
-        originalClassReader.accept(visitor, ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
+        originalClassReader.accept(visitor, ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES | ClassReader.SKIP_CODE);
         if (visitor.isPrivateInnerClass()) {
             return Optional.empty();
         }
