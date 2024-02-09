@@ -16,6 +16,7 @@
 
 package org.gradle.internal.fingerprint.classpath.impl;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Interner;
 import com.google.common.collect.Iterables;
@@ -54,8 +55,14 @@ import org.gradle.internal.snapshot.SnapshotVisitResult;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutionException;
 
 import static org.gradle.internal.fingerprint.classpath.impl.ClasspathFingerprintingStrategy.NonJarFingerprintingStrategy.IGNORE;
 import static org.gradle.internal.fingerprint.classpath.impl.ClasspathFingerprintingStrategy.NonJarFingerprintingStrategy.USE_FILE_HASH;
@@ -158,10 +165,9 @@ public class ClasspathFingerprintingStrategy extends AbstractFingerprintingStrat
 
     @Override
     public Map<String, FileSystemLocationFingerprint> collectFingerprints(FileSystemSnapshot roots) {
-        ImmutableMap.Builder<String, FileSystemLocationFingerprint> builder = ImmutableMap.builder();
-        HashSet<String> processedEntries = new HashSet<>();
-        roots.accept(new RelativePathTracker(), new ClasspathFingerprintingVisitor(processedEntries, builder));
-        return builder.build();
+        ClasspathFingerprintingVisitor visitor = new ClasspathFingerprintingVisitor();
+        roots.accept(new RelativePathTracker(), visitor);
+        return visitor.getProcessedEntries();
     }
 
     public enum NonJarFingerprintingStrategy {
@@ -184,43 +190,36 @@ public class ClasspathFingerprintingStrategy extends AbstractFingerprintingStrat
     }
 
     private class ClasspathFingerprintingVisitor implements RelativePathTrackingFileSystemSnapshotHierarchyVisitor {
-        private final HashSet<String> processedEntries;
-        private final ImmutableMap.Builder<String, FileSystemLocationFingerprint> builder;
-
-
-        public ClasspathFingerprintingVisitor(HashSet<String> processedEntries, ImmutableMap.Builder<String, FileSystemLocationFingerprint> builder) {
-            this.processedEntries = processedEntries;
-            this.builder = builder;
-        }
+        private final ConcurrentMap<String, FileSystemLocationFingerprint> processedEntries =new ConcurrentHashMap<>();
+        private final List<CompletableFuture<String>> tasks = new ArrayList<>();
 
         @Override
         public SnapshotVisitResult visitEntry(FileSystemLocationSnapshot snapshot, RelativePathSupplier relativePath) {
+            ImmutableRelativePath immutableRelativePath = new ImmutableRelativePath(relativePath);
             snapshot.accept(new FileSystemLocationSnapshotVisitor() {
                 @Override
                 public void visitRegularFile(RegularFileSnapshot fileSnapshot) {
-                    HashCode normalizedContentHash = hashContent(fileSnapshot, relativePath);
-                    if (normalizedContentHash == null) {
-                        return;
-                    }
-
-                    String absolutePath = snapshot.getAbsolutePath();
-                    if (!processedEntries.add(absolutePath)) {
-                        return;
-                    }
-
-                    FileSystemLocationFingerprint fingerprint;
-                    if (relativePath.isRoot()) {
-                        fingerprint = IgnoredPathFileSystemLocationFingerprint.create(snapshot.getType(), normalizedContentHash);
-                    } else {
-                        String internedRelativePath = stringInterner.intern(relativePath.toRelativePath());
-                        fingerprint = new DefaultFileSystemLocationFingerprint(internedRelativePath, FileType.RegularFile, normalizedContentHash);
-                    }
-                    builder.put(absolutePath, fingerprint);
+                    tasks.add(CompletableFuture.supplyAsync(() -> {
+                        String absolutePath = snapshot.getAbsolutePath();
+                        HashCode normalizedContentHash = hashContent(fileSnapshot, immutableRelativePath);
+                        if (normalizedContentHash == null) {
+                            return absolutePath;
+                        }
+                        FileSystemLocationFingerprint fingerPrint;
+                        if (immutableRelativePath.isRoot()) {
+                            fingerPrint = IgnoredPathFileSystemLocationFingerprint.create(snapshot.getType(), normalizedContentHash);
+                        } else {
+                            String internedRelativePath = stringInterner.intern(immutableRelativePath.toRelativePath());
+                            fingerPrint=  new DefaultFileSystemLocationFingerprint(internedRelativePath, FileType.RegularFile, normalizedContentHash);
+                        }
+                        processedEntries.putIfAbsent(absolutePath, fingerPrint);
+                        return absolutePath;
+                    }));
                 }
 
                 @Override
                 public void visitMissing(MissingFileSnapshot missingSnapshot) {
-                    if (!relativePath.isRoot()) {
+                    if (!immutableRelativePath.isRoot()) {
                         throw new RuntimeException(String.format("Couldn't read file content: '%s'.", missingSnapshot.getAbsolutePath()));
                     }
                 }
@@ -253,10 +252,59 @@ public class ClasspathFingerprintingStrategy extends AbstractFingerprintingStrat
         private String failedToNormalize(RegularFileSnapshot snapshot) {
             return String.format("Failed to normalize content of '%s'.", snapshot.getAbsolutePath());
         }
+
+        @SuppressWarnings("rawtypes")
+        public Map<String, FileSystemLocationFingerprint> getProcessedEntries() {
+            ImmutableMap.Builder<String, FileSystemLocationFingerprint> builder = ImmutableMap.builder();
+            for (CompletableFuture<String> task : tasks) {
+                try {
+                    String absolutePath = task.get();
+                    FileSystemLocationFingerprint fingerprint = processedEntries.get(absolutePath);
+                    if (fingerprint != null) {
+                        builder.put(absolutePath, fingerprint);
+                    }
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    throw new RuntimeException(e);
+                } catch (ExecutionException e) {
+                    throw new RuntimeException(e.getCause());
+                }
+            }
+
+            return builder.build();
+        }
     }
 
     @Override
     public FingerprintHashingStrategy getHashingStrategy() {
         return FingerprintHashingStrategy.KEEP_ORDER;
+    }
+
+
+    private static class ImmutableRelativePath implements RelativePathSupplier {
+
+        private final boolean isRoot;
+        private final ImmutableList<String> segments;
+        private final String relativePath;
+
+        public ImmutableRelativePath(RelativePathSupplier supplier) {
+            this.isRoot = supplier.isRoot();
+            this.segments = ImmutableList.copyOf(supplier.getSegments());
+            this.relativePath = supplier.toRelativePath();
+        }
+        @Override
+        public boolean isRoot() {
+            return isRoot;
+        }
+
+        @Override
+        public Collection<String> getSegments() {
+            return segments;
+        }
+
+        @Override
+        public String toRelativePath() {
+            return relativePath;
+        }
     }
 }
