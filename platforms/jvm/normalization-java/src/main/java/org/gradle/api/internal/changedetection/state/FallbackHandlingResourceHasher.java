@@ -156,6 +156,11 @@ abstract class FallbackHandlingResourceHasher implements ResourceHasher {
         }
 
         @Override
+        public long getCrc() {
+            return delegate.getCrc();
+        }
+
+        @Override
         public boolean canReopen() {
             return true;
         }

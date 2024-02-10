@@ -50,6 +50,11 @@ abstract class AbstractZipEntry implements ZipEntry {
     }
 
     @Override
+    public long getCrc() {
+        return entry.getCrc();
+    }
+
+    @Override
     public byte[] getContent() throws IOException {
         return withInputStream(new IoFunction<InputStream, byte[]>() {
             @Override

@@ -58,11 +58,7 @@ public class AbiExtractingClasspathResourceHasher implements ResourceHasher {
 
     @Nullable
     private HashCode hashClassBytes(byte[] classBytes) {
-        // Use the ABI as the hash
-        ClassReader reader = new ClassReader(classBytes);
-        return extractor.extractApiClassFrom(reader)
-            .map(Hashing::hashBytes)
-            .orElse(null);
+        return Hashing.hashBytes(classBytes);
     }
 
     @Nullable

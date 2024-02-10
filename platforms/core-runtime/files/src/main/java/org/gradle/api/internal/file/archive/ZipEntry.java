@@ -67,6 +67,11 @@ public interface ZipEntry {
     int size();
 
     /**
+     * The CRC-32 of the uncompressed entry data or -1 if unknown.
+     */
+    long getCrc();
+
+    /**
      * Whether or not the zip entry can safely be read again if any bytes
      * have already been read from it.
      */
