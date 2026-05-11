@@ -120,7 +120,11 @@ public class BuildCacheStep<C extends WorkspaceContext & CachingContext> impleme
     private Optional<BuildCacheLoadResult> tryLoadingFromCache(BuildCacheKey cacheKey, CacheableWork cacheableWork) {
         Collection<String> cacheableLocations = cacheableWork.work.getCachedOutputLocationsForInvalidation(cacheableWork.workspace);
         fileSystemAccess.invalidate(cacheableLocations);
-        return buildCache.load(cacheKey, cacheableWork);
+        Optional<BuildCacheLoadResult> load = buildCache.load(cacheKey, cacheableWork);
+        load.ifPresent(result ->
+            result.getResultingSnapshots().values().forEach(snapshot ->
+                snapshot.roots().forEach(fileSystemAccess::record)));
+        return load;
     }
 
     private void cleanLocalState(File workspace, UnitOfWork work) {
